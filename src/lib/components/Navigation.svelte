@@ -1,34 +1,25 @@
 <script lang="ts">
   import { page } from '$app/stores';
+  import { goto } from '$app/navigation';
+  
+  const links = [
+    { path: '/entry', icon: '📅', label: 'Log' },
+    { path: '/weekly', icon: '📊', label: 'View' },
+    { path: '/settings', icon: '⚙️', label: 'Settings' }
+  ];
 </script>
 
 <nav class="fixed bottom-0 w-full bg-white border-t-2 border-gray-100">
   <div class="flex justify-around p-4">
-    <a
-      href="/entry"
-      class="flex flex-col items-center text-sm font-medium"
-      class:font-bold={$page.url.pathname === '/entry'}
-    >
-      <span class="text-2xl">📅</span>
-      <span class:text-blue-500={$page.url.pathname === '/entry'}>Log</span>
-    </a>
-    
-    <a
-      href="/weekly"
-      class="flex flex-col items-center text-sm font-medium"
-      class:font-bold={$page.url.pathname === '/weekly'}
-    >
-      <span class="text-2xl">📊</span>
-      <span class:text-blue-500={$page.url.pathname === '/weekly'}>View</span>
-    </a>
-    
-    <a
-      href="/settings"
-      class="flex flex-col items-center text-sm font-medium"
-      class:font-bold={$page.url.pathpathname === '/settings'}
-    >
-      <span class="text-2xl">⚙️</span>
-      <span class:text-blue-500={$page.url.pathname === '/settings'}>Settings</span>
-    </a>
+    {#each links as link}
+      <button
+        on:click={() => goto(link.path)}
+        class="flex flex-col items-center text-sm font-medium"
+        class:font-bold={$page.url.pathname === link.path}
+      >
+        <span class="text-2xl">{link.icon}</span>
+        <span class:text-blue-500={$page.url.pathname === link.path}>{link.label}</span>
+      </button>
+    {/each}
   </div>
 </nav>
