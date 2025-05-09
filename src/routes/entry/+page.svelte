@@ -32,7 +32,13 @@
     };
 
     try {
-      await db.entries.put(entry);
+      // Check if entry exists for this date
+      const existing = await db.entries.get({ date: entry.date });
+      
+      // If exists, include its id for update
+      const entryToSave = existing ? { ...entry, id: existing.id } : entry;
+      
+      await db.entries.put(entryToSave);
       
       // Reset form
       selectedMood = null;

@@ -194,7 +194,7 @@ Okay, this is a well-defined set of requirements. Based on the PRD, brainstorm, 
             *   An "Export Data" button/option is available (e.g., in a settings area).
             *   Clicking the button retrieves all entries from IndexedDB.
             *   Data is formatted as a JSON string.
-            *   The JSON data is offered to the user as a downloadable file (e.g., `tellme_backup.json`).
+            *   The JSON data is offered to the user as a downloadable file (e.g., `tellme_backup{datetime}.json`).
         *   **Technical Suggestions:**
             *   Use Dexie.js `db.entries.toArray()` to get all data.
             *   Use `JSON.stringify()` to convert the array of entry objects to a JSON string.
