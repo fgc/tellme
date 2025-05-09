@@ -3,6 +3,7 @@
   import MoodSelector from '$lib/components/MoodSelector.svelte';
   import ActivitySelector from '$lib/components/ActivitySelector.svelte';
   import { fade } from 'svelte/transition';
+  import { db } from '$lib/db';
   
   let selectedMood: number | null = null;
   let selectedActivities: string[] = [];
@@ -30,14 +31,22 @@
       timestamp: new Date().toISOString()
     };
 
-    console.log('Saving entry:', entry);
-    
-    // Reset loading state
-    isLoading = false;
-    
-    // Show success feedback
-    showSuccess = true;
-    setTimeout(() => showSuccess = false, 3000);
+    try {
+      await db.entries.put(entry);
+      
+      // Reset form
+      selectedMood = null;
+      selectedActivities = [];
+      notes = '';
+      
+      // Show success feedback
+      showSuccess = true;
+      setTimeout(() => showSuccess = false, 3000);
+    } catch (error) {
+      console.error('Failed to save entry:', error);
+    } finally {
+      isLoading = false;
+    }
   }
 </script>
 
