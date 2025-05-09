@@ -60,36 +60,45 @@
   loadEntries();
 </script>
 
-<h1 class="text-2xl font-bold mb-4">Weekly View</h1>
-<div class="flex justify-between mb-4">
-  <button
-    on:click={() => navigateWeek(-7)}
-    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
-  >
-    Previous Week
-  </button>
-  <button
-    on:click={() => navigateWeek(7)}
-    disabled={isCurrentWeek}
-    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-  >
-    Next Week
-  </button>
+<div class="flex justify-between mb-6">
+    <button
+      on:click={() => navigateWeek(-7)}
+      class="px-4 py-2 bg-accent-700 text-white rounded-lg hover:bg-accent-800 transition-colors"
+    >
+      Previous Week
+    </button>
+    <button
+      on:click={() => navigateWeek(7)}
+      disabled={isCurrentWeek}
+      class="px-4 py-2 bg-accent-700 text-white rounded-lg hover:bg-accent-800 transition-colors disabled:bg-gray-400 disabled:text-gray-700"
+    >
+      Next Week
+    </button>
 </div>
-<div class="bg-white p-6 rounded-lg shadow">
+<div class="bg-white p-6 rounded-lg shadow-md">
   {#if isLoading}
     <p class="text-center text-gray-500">Loading...</p>
   {:else}
     <div class="grid grid-cols-7 gap-2">
       {#each getLast7Days() as date}
         <div 
-          class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
+          class="flex flex-col items-center p-2 border border-gray-200 rounded-lg cursor-pointer hover:bg-gray-100 transition-colors"
           on:click={() => {
             if (entries[date]) {
               selectedEntry = entries[date];
               showEntryModal = true;
             }
           }}
+          on:keydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (entries[date]) {
+                selectedEntry = entries[date];
+                showEntryModal = true;
+              }
+            }
+          }}
+          role="button"
+          tabindex="0"
         >
           <div class="text-sm font-medium mb-1 text-center">
             <div>{new Date(date).toLocaleDateString('en-US', { weekday: 'short' })}</div>
@@ -99,8 +108,11 @@
           </div>
           
           {#if entries[date]}
-            <div class="text-3xl mb-1">
-              {moods.find((m: {value: number}) => m.value === entries[date].mood)?.icon}
+            <div class="flex flex-col items-center">
+              <div class="text-3xl mb-1 p-2 rounded-full {moods.find((m: {value: number}) => m.value === entries[date].mood)?.color}">
+                <svelte:component this={moods.find((m: {value: number}) => m.value === entries[date].mood)?.icon} 
+                  class="fill-current {moods.find((m: {value: number}) => m.value === entries[date].mood)?.textColor}" />
+              </div>
             </div>
             <div class="text-xs text-gray-600 text-center">
               {entries[date].activities.slice(0, 3).join(', ')}
@@ -109,7 +121,7 @@
               {/if}
             </div>
           {:else}
-            <div class="text-gray-400 text-sm">No entry</div>
+            <div class="text-gray-500 text-sm">No entry</div>
           {/if}
         </div>
       {/each}

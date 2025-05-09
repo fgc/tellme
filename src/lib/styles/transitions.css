@@ -1,0 +1,11 @@
+.button-transition {
+  @apply transition-all duration-200 ease-in-out;
+}
+
+.button-active {
+  @apply transform scale-95;
+}
+
+.button-hover {
+  @apply shadow-md;
+}

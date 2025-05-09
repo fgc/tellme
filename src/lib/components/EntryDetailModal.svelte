@@ -14,6 +14,9 @@
 <div
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
   on:click|self={closeModal}
+  on:keydown|stopPropagation={e => e.key === 'Escape' && closeModal()}
+  role="dialog"
+  tabindex="0"
   transition:fade
 >
   <div class="bg-white rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
@@ -32,7 +35,8 @@
 
     <div class="flex items-center mb-4">
       <span class="text-4xl mr-3">
-        {moods.find((m: {value: number}) => m.value === entry.mood)?.icon}
+        <svelte:component this={moods.find((m: {value: number}) => m.value === entry.mood)?.icon} 
+          class="fill-current {moods.find((m: {value: number}) => m.value === entry.mood)?.textColor}" />
       </span>
       <span class="text-lg">
         {moods.find((m: {value: number}) => m.value === entry.mood)?.label}

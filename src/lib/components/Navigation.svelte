@@ -18,7 +18,7 @@
         class:font-bold={$page.url.pathname === link.path}
       >
         <span class="text-2xl">{link.icon}</span>
-        <span class:text-blue-500={$page.url.pathname === link.path}>{link.label}</span>
+        <span class:text-accent-500={$page.url.pathname === link.path}>{link.label}</span>
       </button>
     {/each}
   </div>
