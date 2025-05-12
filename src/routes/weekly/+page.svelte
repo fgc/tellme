@@ -60,6 +60,14 @@
 
   loadEntries();
 
+  function truncateNotes(notes: string, limit: number) {
+    const words = notes.split(' ');
+    if (words.length > limit) {
+      return words.slice(0, limit).join(' ') + '...';
+    }
+    return notes;
+  }
+
   // Reactive statement to get mood details for each entry
   $: entriesWithMoodDetails = Object.keys(entries).reduce((acc, date) => {
     const entry = entries[date];
@@ -145,7 +153,7 @@
                 </div>
                 {#if entriesWithMoodDetails[date].notes}
                   <div class="text-xs text-gray-600 italic">
-                      Notes: {entriesWithMoodDetails[date].notes}
+                      Notes: {truncateNotes(entriesWithMoodDetails[date].notes, 20)}
                     </div>
                   {/if}
                 </div>
