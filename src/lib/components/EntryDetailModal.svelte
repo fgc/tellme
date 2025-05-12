@@ -14,6 +14,9 @@
 <div
   class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50"
   on:click|self={closeModal}
+  on:keydown={(e) => { if (e.key === 'Enter' || e.key === ' ') closeModal(); }}
+  role="button"
+  tabindex="0"
   transition:fade
 >
   <div class="bg-white rounded-lg p-6 max-w-md w-full max-h-[80vh] overflow-y-auto">
