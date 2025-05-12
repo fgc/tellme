@@ -58,10 +58,12 @@
 
       // Show success feedback
       showSuccess = true;
+      // Show success feedback
+      showSuccess = true;
       setTimeout(() => showSuccess = false, 3000);
 
-      // Optionally navigate back to the main entry page or another page after saving
-      // goto('/entry');
+      // Navigate to the weekly view after saving
+      goto('/weekly');
 
     } catch (error) {
       console.error('Failed to save entry:', error);
