@@ -125,9 +125,9 @@
                   <img src={entriesWithMoodDetails[date].moodDetails.icon} alt={entriesWithMoodDetails[date].moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {entriesWithMoodDetails[date].moodDetails.color});" />
                 {/if}
                 <div class="flex flex-col">
-                  <div class="text-sm font-semibold capitalize">
+                  <div class="text-sm font-semibold" style="color: {entriesWithMoodDetails[date].moodDetails.color};">
                     {#if entriesWithMoodDetails[date].moodDetails}
-                      {entriesWithMoodDetails[date].moodDetails.label}
+                      {entriesWithMoodDetails[date].moodDetails.label.toUpperCase()}
                     {/if}
                   </div>
                 <div class="text-xs text-gray-600 flex flex-wrap items-center gap-2">
