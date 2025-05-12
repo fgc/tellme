@@ -12,9 +12,9 @@
   }
 </script>
 
-<div class="flex flex-col items-center justify-center min-h-screen p-4">
+<div class="flex flex-col items-center justify-center p-4 flex-grow">
   <h1 class="text-3xl font-semibold mb-2 text-center">HOW ARE YOU?</h1>
-  <p class="text-gray-600 mb-8 text-center">
+  <p class="text-gray-600 mb-8 p-6 text-center">
     <span class="mdi mdi-calendar-blank mr-1"></span>
     {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
   </p>
