@@ -12,7 +12,13 @@
   }
 </script>
 
-<h1 class="text-2xl font-bold mb-4">Select Your Mood</h1>
-<div class="bg-white p-6 rounded-lg shadow">
-  <MoodSelector bind:selectedMood />
+<div class="flex flex-col items-center justify-center min-h-screen p-4">
+  <h1 class="text-3xl font-semibold mb-2 text-center">HOW ARE YOU?</h1>
+  <p class="text-gray-600 mb-8 text-center">
+    <span class="mdi mdi-calendar-blank mr-1"></span>
+    {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
+  </p>
+  <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
+    <MoodSelector bind:selectedMood />
+  </div>
 </div>

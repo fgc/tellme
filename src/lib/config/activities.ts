@@ -2,23 +2,22 @@ export interface Activity {
   id: string;
   label: string;
   icon: string;
-  color: string;
 }
 
 export const activities: Activity[] = [
-  { id: 'exercise', label: 'Exercise', icon: '🏋️', color: 'bg-red-100' },
-  { id: 'reading', label: 'Reading', icon: '📖', color: 'bg-blue-100' },
-  { id: 'cooking', label: 'Cooking', icon: '👩🍳', color: 'bg-green-100' },
-  { id: 'social', label: 'Social', icon: '👥', color: 'bg-purple-100' },
-  { id: 'work', label: 'Work', icon: '💼', color: 'bg-yellow-100' },
-  { id: 'music', label: 'Music', icon: '🎵', color: 'bg-pink-100' },
-  { id: 'nature', label: 'Nature', icon: '🌳', color: 'bg-emerald-100' },
-  { id: 'games', label: 'Games', icon: '🎮', color: 'bg-amber-100' },
-  { id: 'art', label: 'Art', icon: '🎨', color: 'bg-fuchsia-100' },
-  { id: 'shopping', label: 'Shopping', icon: '🛍️', color: 'bg-rose-100' },
-  { id: 'meditation', label: 'Meditation', icon: '🧘', color: 'bg-indigo-100' },
-  { id: 'learning', label: 'Learning', icon: '🎓', color: 'bg-sky-100' },
-  { id: 'cleaning', label: 'Cleaning', icon: '🧹', color: 'bg-gray-100' },
-  { id: 'nap', label: 'Nap', icon: '😴', color: 'bg-lime-100' },
-  { id: 'tv', label: 'TV', icon: '📺', color: 'bg-violet-100' }
+  { id: 'exercise', label: 'Exercise', icon: 'mdi-run' },
+  { id: 'reading', label: 'Reading', icon: 'mdi-book' },
+  { id: 'cooking', label: 'Cooking', icon: 'mdi-chef-hat' },
+  { id: 'social', label: 'Social', icon: 'mdi-account-group' },
+  { id: 'work', label: 'Work', icon: 'mdi-briefcase' },
+  { id: 'music', label: 'Music', icon: 'mdi-music' },
+  { id: 'nature', label: 'Nature', icon: 'mdi-tree' },
+  { id: 'games', label: 'Games', icon: 'mdi-gamepad-variant' },
+  { id: 'art', label: 'Art', icon: 'mdi-palette' },
+  { id: 'shopping', label: 'Shopping', icon: 'mdi-cart' },
+  { id: 'meditation', label: 'Meditation', icon: 'mdi-meditation' },
+  { id: 'learning', label: 'Learning', icon: 'mdi-school' },
+  { id: 'cleaning', label: 'Cleaning', icon: 'mdi-broom' },
+  { id: 'nap', label: 'Nap', icon: 'mdi-sleep' },
+  { id: 'tv', label: 'TV', icon: 'mdi-television' }
 ];

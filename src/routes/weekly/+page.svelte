@@ -82,7 +82,7 @@
   {:else}
     <div class="grid grid-cols-7 gap-2">
       {#each getLast7Days() as date}
-        <div 
+        <div
           class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
           on:click={() => {
             if (entries[date]) {
@@ -90,6 +90,16 @@
               showEntryModal = true;
             }
           }}
+          on:keydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              if (entries[date]) {
+                selectedEntry = entries[date];
+                showEntryModal = true;
+              }
+            }
+          }}
+          role="button"
+          tabindex="0"
         >
           <div class="text-sm font-medium mb-1 text-center">
             <div>{new Date(date).toLocaleDateString('en-US', { weekday: 'short' })}</div>
@@ -97,7 +107,7 @@
               {new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             </div>
           </div>
-          
+
           {#if entries[date]}
             <div class="text-3xl mb-1">
               {moods.find((m: {value: number}) => m.value === entries[date].mood)?.icon}

@@ -83,49 +83,55 @@
 
 </script>
 
-<h1 class="text-2xl font-bold mb-4">Entry Details</h1>
-
-{#if selectedMoodDetails}
-  <div class="flex items-center mb-4">
-    <span class="text-4xl mr-3">
-      {selectedMoodDetails.icon}
-    </span>
-    <span class="text-lg font-semibold">
-      {selectedMoodDetails.label}
-    </span>
-  </div>
-{/if}
-
-<div class="bg-white p-6 rounded-lg shadow">
-  <h2 class="text-lg font-semibold mb-4">Today's Activities</h2>
-  <ActivitySelector bind:selectedActivities />
-
-  <div class="mt-6">
-    <label for="notes-input" class="block text-sm font-medium mb-2 text-gray-700">
-      Notes (optional)
-    </label>
-    <textarea
-      id="notes-input"
-      bind:value={notes}
-      class="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-      rows="4"
-      placeholder="Add any additional notes about your day..."
-    ></textarea>
-  </div>
-
-  <div class="mt-6 flex justify-end gap-4">
-    <button
-      on:click={saveEntry}
-      class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-      disabled={currentEntry.mood === null || isLoading}
-    >
-      {isLoading ? 'Saving...' : 'Save Entry'}
-    </button>
-  </div>
+<div class="p-4 max-w-md mx-auto">
+<div class="flex items-center justify-between mb-6">
+  <button on:click={() => goto('/entry')} class="text-gray-600 hover:text-gray-800" aria-label="Go back">
+    <span class="mdi mdi-arrow-left text-2xl"></span>
+  </button>
+  {#if selectedMoodDetails}
+    <div class="flex items-center">
+      <img src={selectedMoodDetails.icon} alt={selectedMoodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {selectedMoodDetails.color});" />
+      <span class="text-lg font-semibold capitalize">{selectedMoodDetails.label}</span>
+    </div>
+  {/if}
+  <!-- Placeholder for checkmark icon if needed -->
+  <div class="w-6"></div>
 </div>
 
-{#if showSuccess}
-  <div transition:fade class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg">
-    Entry saved successfully!
+  <div class="bg-white p-6 rounded-lg shadow-lg">
+    <h2 class="text-xl font-semibold mb-4 text-center">WHAT HAVE YOU BEEN UP TO?</h2>
+
+    <div class="mb-6">
+      <ActivitySelector bind:selectedActivities />
+    </div>
+
+    <div class="mb-6">
+      <label for="notes-input" class="block text-sm font-medium mb-2 text-gray-700">
+        Add Note...
+      </label>
+      <textarea
+        id="notes-input"
+        bind:value={notes}
+        class="w-full p-3 border-none focus:ring-0 focus:border-transparent"
+        rows="4"
+        placeholder="Add any additional notes about your day..."
+      ></textarea>
+    </div>
+
+    <div class="flex justify-end">
+      <button
+        on:click={saveEntry}
+        class="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+        disabled={currentEntry.mood === null || isLoading}
+      >
+        {isLoading ? 'Saving...' : 'Save Entry'}
+      </button>
+    </div>
   </div>
-{/if}
+
+  {#if showSuccess}
+    <div transition:fade class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg">
+      Entry saved successfully!
+    </div>
+  {/if}
+</div>

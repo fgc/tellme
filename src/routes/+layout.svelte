@@ -1,6 +1,8 @@
 <script lang="ts">
   import { page } from '$app/stores';
   import Navigation from '$lib/components/Navigation.svelte';
+  import '../app.css'; // Import the global styles
+
 </script>
 
 {#if $page.status === 404}
