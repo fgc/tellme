@@ -70,80 +70,81 @@
   }, {} as Record<string, any>);
 </script>
 
-<h1 class="text-2xl font-bold mb-4">Weekly View</h1>
 <div class="flex justify-between mb-4">
   <button
     on:click={() => navigateWeek(-7)}
-    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors"
+    class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-200 transition-colors"
   >
-    Previous Week
+    &lt;
   </button>
   <button
     on:click={() => navigateWeek(7)}
     disabled={isCurrentWeek}
     class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
   >
-    Next Week
+    &gt;
   </button>
 </div>
-<div class="bg-white p-6 rounded-lg shadow">
+<div class="bg-gray-100 p-6 rounded-lg shadow">
   {#if isLoading}
     <p class="text-center text-gray-500">Loading...</p>
   {:else}
     <div class="flex flex-col gap-4"> <!-- Changed to vertical flex layout -->
       {#each getLast7Days() as date}
-        <div
-          class="flex items-center p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
-          on:click={() => {
-            if (entries[date]) {
-              selectedEntry = entries[date];
-              showEntryModal = true;
-            }
-          }}
-          on:keydown={(e) => {
-            if (e.key === 'Enter' || e.key === ' ') {
+        <div class="bg-white rounded shadow mb-4"> <!-- Container for each day's card -->
+          <div
+            class="p-1 text-sm font-medium text-center"
+            style="{entriesWithMoodDetails[date] ? `background-color: ${entriesWithMoodDetails[date].moodDetails.lighterColor}; color: ${entriesWithMoodDetails[date].moodDetails.color};` : 'background-color: white; color: gray;'}"
+          > <!-- Date Header -->
+            {new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+          </div>
+
+          <div
+            class="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
+            on:click={() => {
               if (entries[date]) {
                 selectedEntry = entries[date];
                 showEntryModal = true;
               }
-            }
-          }}
-          role="button"
-          tabindex="0"
-        >
-          <div class="flex-shrink-0 text-sm font-medium text-center mr-4"> <!-- Date column -->
-            <div>{new Date(date).toLocaleDateString('en-US', { weekday: 'short' })}</div>
-            <div class="text-xs text-gray-500">
-              {new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </div>
-          </div>
-
-          {#if entriesWithMoodDetails[date]}
-            <div class="flex items-center flex-grow"> <!-- Mood, Activities, Notes column -->
-              {#if entriesWithMoodDetails[date].moodDetails}
-                <img src={entriesWithMoodDetails[date].moodDetails.icon} alt={entriesWithMoodDetails[date].moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {entriesWithMoodDetails[date].moodDetails.color});" />
-              {/if}
-              <div class="flex flex-col">
-                <div class="text-sm font-semibold capitalize">
-                  {#if entriesWithMoodDetails[date].moodDetails}
-                    {entriesWithMoodDetails[date].moodDetails.label}
-                  {/if}
-                </div>
-                <div class="text-xs text-gray-600">
-                  {#if entriesWithMoodDetails[date].activities.length > 0}
-                    Activities: {entriesWithMoodDetails[date].activities.join(', ')}
-                  {/if}
-                </div>
-                {#if entriesWithMoodDetails[date].notes}
-                  <div class="text-xs text-gray-600 italic">
-                    Notes: {entriesWithMoodDetails[date].notes}
-                  </div>
+            }}
+            on:keydown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                if (entries[date]) {
+                  selectedEntry = entries[date];
+                  showEntryModal = true;
+                }
+              }
+            }}
+            role="button"
+            tabindex="0"
+          > <!-- Entry Details -->
+            {#if entriesWithMoodDetails[date]}
+              <div class="flex items-center gap-4">
+                {#if entriesWithMoodDetails[date].moodDetails}
+                  <img src={entriesWithMoodDetails[date].moodDetails.icon} alt={entriesWithMoodDetails[date].moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {entriesWithMoodDetails[date].moodDetails.color});" />
                 {/if}
+                <div class="flex flex-col">
+                  <div class="text-sm font-semibold capitalize">
+                    {#if entriesWithMoodDetails[date].moodDetails}
+                      {entriesWithMoodDetails[date].moodDetails.label}
+                    {/if}
+                  </div>
+                  <div class="text-xs text-gray-600">
+                    {#if entriesWithMoodDetails[date].activities.length > 0}
+                      {entriesWithMoodDetails[date].activities.join(', ')}
+                    {/if}
+                  </div>
+                  {#if entriesWithMoodDetails[date].notes}
+                    <div class="text-xs text-gray-600 italic">
+                      Notes: {entriesWithMoodDetails[date].notes}
+                    </div>
+                  {/if}
+                </div>
               </div>
-            </div>
-          {:else}
-            <div class="text-gray-400 text-sm flex-grow">No entry</div> <!-- Adjusted for layout -->
-          {/if}
+            {:else}
+              <div class="text-gray-400 text-sm">No entry</div>
+            {/if}
+          </div>
         </div>
       {/each}
     </div>
