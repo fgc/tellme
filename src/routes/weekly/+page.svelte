@@ -3,7 +3,7 @@
   import { moods } from '$lib/config/moods';
   import { weekStartDate } from '$lib/stores/weeklyView';
   import EntryDetailModal from '$lib/components/EntryDetailModal.svelte';
-  
+
   let entries: Record<string, any> = {};
   let isLoading = true;
   let currentWeekStart: Date;
@@ -47,17 +47,27 @@
       .where('date')
       .anyOf(dates)
       .toArray();
-    
+
     // Create a map of date to entry for easy lookup
     entries = weekEntries.reduce((acc, entry) => {
       acc[entry.date] = entry;
       return acc;
     }, {} as Record<string, any>);
-    
+
     isLoading = false;
   }
 
   loadEntries();
+
+  // Reactive statement to get mood details for each entry
+  $: entriesWithMoodDetails = Object.keys(entries).reduce((acc, date) => {
+    const entry = entries[date];
+    acc[date] = {
+      ...entry,
+      moodDetails: moods.find(m => m.value === entry.mood)
+    };
+    return acc;
+  }, {} as Record<string, any>);
 </script>
 
 <h1 class="text-2xl font-bold mb-4">Weekly View</h1>
@@ -80,10 +90,10 @@
   {#if isLoading}
     <p class="text-center text-gray-500">Loading...</p>
   {:else}
-    <div class="grid grid-cols-7 gap-2">
+    <div class="flex flex-col gap-4"> <!-- Changed to vertical flex layout -->
       {#each getLast7Days() as date}
         <div
-          class="flex flex-col items-center p-2 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
+          class="flex items-center p-4 border rounded cursor-pointer hover:bg-gray-50 transition-colors"
           on:click={() => {
             if (entries[date]) {
               selectedEntry = entries[date];
@@ -101,25 +111,38 @@
           role="button"
           tabindex="0"
         >
-          <div class="text-sm font-medium mb-1 text-center">
+          <div class="flex-shrink-0 text-sm font-medium text-center mr-4"> <!-- Date column -->
             <div>{new Date(date).toLocaleDateString('en-US', { weekday: 'short' })}</div>
             <div class="text-xs text-gray-500">
               {new Date(date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
             </div>
           </div>
 
-          {#if entries[date]}
-            <div class="text-3xl mb-1">
-              {moods.find((m: {value: number}) => m.value === entries[date].mood)?.icon}
-            </div>
-            <div class="text-xs text-gray-600 text-center">
-              {entries[date].activities.slice(0, 3).join(', ')}
-              {#if entries[date].activities.length > 3}
-                +{entries[date].activities.length - 3} more
+          {#if entriesWithMoodDetails[date]}
+            <div class="flex items-center flex-grow"> <!-- Mood, Activities, Notes column -->
+              {#if entriesWithMoodDetails[date].moodDetails}
+                <img src={entriesWithMoodDetails[date].moodDetails.icon} alt={entriesWithMoodDetails[date].moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {entriesWithMoodDetails[date].moodDetails.color});" />
               {/if}
+              <div class="flex flex-col">
+                <div class="text-sm font-semibold capitalize">
+                  {#if entriesWithMoodDetails[date].moodDetails}
+                    {entriesWithMoodDetails[date].moodDetails.label}
+                  {/if}
+                </div>
+                <div class="text-xs text-gray-600">
+                  {#if entriesWithMoodDetails[date].activities.length > 0}
+                    Activities: {entriesWithMoodDetails[date].activities.join(', ')}
+                  {/if}
+                </div>
+                {#if entriesWithMoodDetails[date].notes}
+                  <div class="text-xs text-gray-600 italic">
+                    Notes: {entriesWithMoodDetails[date].notes}
+                  </div>
+                {/if}
+              </div>
             </div>
           {:else}
-            <div class="text-gray-400 text-sm">No entry</div>
+            <div class="text-gray-400 text-sm flex-grow">No entry</div> <!-- Adjusted for layout -->
           {/if}
         </div>
       {/each}
@@ -127,7 +150,7 @@
   {/if}
 </div>
 
-<EntryDetailModal 
-  bind:isOpen={showEntryModal} 
-  entry={selectedEntry} 
+<EntryDetailModal
+  bind:isOpen={showEntryModal}
+  entry={selectedEntry}
 />
