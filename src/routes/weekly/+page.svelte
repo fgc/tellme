@@ -1,6 +1,7 @@
 <script lang="ts">
   import { db } from '$lib/db';
   import { moods } from '$lib/config/moods';
+  import { activities, type Activity } from '$lib/config/activities';
   import { weekStartDate } from '$lib/stores/weeklyView';
   import EntryDetailModal from '$lib/components/EntryDetailModal.svelte';
 
@@ -129,13 +130,21 @@
                       {entriesWithMoodDetails[date].moodDetails.label}
                     {/if}
                   </div>
-                  <div class="text-xs text-gray-600">
-                    {#if entriesWithMoodDetails[date].activities.length > 0}
-                      {entriesWithMoodDetails[date].activities.join(', ')}
-                    {/if}
-                  </div>
-                  {#if entriesWithMoodDetails[date].notes}
-                    <div class="text-xs text-gray-600 italic">
+                <div class="text-xs text-gray-600 flex flex-wrap items-center gap-2">
+                  {#if entriesWithMoodDetails[date].activities.length > 0}
+                    {#each entriesWithMoodDetails[date].activities as activityId}
+                      {@const activity = activities.find((a: Activity) => a.id === activityId)}
+                      {#if activity}
+                        <span class="flex items-center">
+                          <i class="mdi {activity.icon} text-base mr-1"></i>
+                          {activity.label}
+                        </span>
+                      {/if}
+                    {/each}
+                  {/if}
+                </div>
+                {#if entriesWithMoodDetails[date].notes}
+                  <div class="text-xs text-gray-600 italic">
                       Notes: {entriesWithMoodDetails[date].notes}
                     </div>
                   {/if}
