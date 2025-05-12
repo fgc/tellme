@@ -1,5 +1,6 @@
 <script lang="ts">
   import { moods } from '$lib/config/moods';
+  import { activities, type Activity } from '$lib/config/activities';
   import { fade } from 'svelte/transition';
 
   export let entry: any;
@@ -33,23 +34,33 @@
       </button>
     </div>
 
-    <div class="flex items-center mb-4">
-      <span class="text-4xl mr-3">
-        {moods.find((m: {value: number}) => m.value === entry.mood)?.icon}
-      </span>
-      <span class="text-lg">
-        {moods.find((m: {value: number}) => m.value === entry.mood)?.label}
-      </span>
-    </div>
+    {#if entry && entry.mood !== undefined}
+      {@const moodDetails = moods.find((m) => m.value === entry.mood)}
+      {#if moodDetails}
+        <div class="flex items-center mb-4">
+          <img src={moodDetails.icon} alt={moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {moodDetails.color});" />
+          <span class="text-lg font-semibold" style="color: {moodDetails.color};">
+            {moodDetails.label.toUpperCase()}
+          </span>
+        </div>
+      {/if}
+    {/if}
 
-    {#if entry.activities.length > 0}
+    {#if entry && entry.activities && entry.activities.length > 0}
+      {@const moodDetails = moods.find((m) => m.value === entry.mood)}
       <div class="mb-4">
         <h3 class="font-semibold mb-2">Activities</h3>
-        <ul class="list-disc pl-5">
-          {#each entry.activities as activity}
-            <li>{activity}</li>
+        <div class="flex flex-wrap items-center gap-2">
+          {#each entry.activities as activityId}
+            {@const activity = activities.find((a: Activity) => a.id === activityId)}
+            {#if activity}
+              <span class="flex items-center">
+                <i class="mdi {activity.icon} text-base mr-1" style="color: {moodDetails?.color};"></i>
+                {activity.label}
+              </span>
+            {/if}
           {/each}
-        </ul>
+        </div>
       </div>
     {/if}
 
