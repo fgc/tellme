@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 
-interface EntryStore {
+export interface EntryStore {
   mood: number | null;
   activities: string[];
   notes: string;

@@ -9,3 +9,10 @@
 body {
   font-family: var(--font-body) !important;
 }
+
+/* Mood color classes */
+.bg-mood-awful { background-color: #f8a9b2ff; }
+.bg-mood-bad { background-color: #fbd5aee5; }
+.bg-mood-neutral { background-color: #c3e1ebff; }
+.bg-mood-good { background-color: #cbe2a7f4; }
+.bg-mood-awesome { background-color: #80e4b8ff; }

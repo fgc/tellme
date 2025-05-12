@@ -1,9 +1,9 @@
 <!-- src/routes/entry/+page.svelte -->
 <script lang="ts">
   import MoodSelector from '$lib/components/MoodSelector.svelte';
-  import { entryStore } from '$lib/stores/entryStore';
+  import ActivitySelector from '$lib/components/ActivitySelector.svelte';
+  import { entryStore, type EntryStore } from '$lib/stores/entryStore';
   import { goto } from '$app/navigation';
-
   let selectedMood: number | null = null;
 
   $: if (selectedMood !== null) {
@@ -20,5 +20,10 @@
   </p>
   <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-sm">
     <MoodSelector bind:selectedMood />
+    {#if $entryStore?.activities?.length}
+      <ActivitySelector 
+        selectedActivities={$entryStore.activities}
+      />
+    {/if}
   </div>
 </div>
