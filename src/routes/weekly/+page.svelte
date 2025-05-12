@@ -136,7 +136,7 @@
                       {@const activity = activities.find((a: Activity) => a.id === activityId)}
                       {#if activity}
                         <span class="flex items-center">
-                          <i class="mdi {activity.icon} text-base mr-1"></i>
+                          <i class="mdi {activity.icon} text-base mr-1" style="color: {entriesWithMoodDetails[date].moodDetails.color};"></i>
                           {activity.label}
                         </span>
                       {/if}
