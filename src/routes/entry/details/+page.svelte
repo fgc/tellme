@@ -10,6 +10,7 @@
   let notes = '';
   let showSuccess = false;
   let isLoading = false;
+  let errorMessage = '';
 
   // Subscribe to the store to get initial values and updates
   let currentEntry = $entryStore;
@@ -51,15 +52,17 @@
 
       // Show success feedback
       showSuccess = true;
-      // Show success feedback
-      showSuccess = true;
       setTimeout(() => showSuccess = false, 3000);
+      errorMessage = '';
 
       // Navigate to the weekly view after saving
       goto('/weekly');
 
     } catch (error) {
       console.error('Failed to save entry:', error);
+      errorMessage = error instanceof Error ? error.message : 'Failed to save entry. Please try again.';
+      showSuccess = false;
+      setTimeout(() => errorMessage = '', 5000);
     } finally {
       isLoading = false;
     }
@@ -127,6 +130,10 @@
   {#if showSuccess}
     <div transition:fade class="fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg">
       Entry saved successfully!
+    </div>
+  {:else if errorMessage}
+    <div transition:fade class="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded-lg">
+      {errorMessage}
     </div>
   {/if}
 </div>
