@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { db } from '$lib/db';
+  import { db, type Entry } from '$lib/db';
   import { moods } from '$lib/config/moods';
   import { activities, type Activity } from '$lib/config/activities';
   import { weekStartDate } from '$lib/stores/weeklyView';
@@ -49,11 +49,14 @@
       .anyOf(dates)
       .toArray();
 
-    // Create a map of date to entry for easy lookup
+    // Group entries by date
     entries = weekEntries.reduce((acc, entry) => {
-      acc[entry.date] = entry;
+      if (!acc[entry.date]) {
+        acc[entry.date] = [];
+      }
+      acc[entry.date].push(entry);
       return acc;
-    }, {} as Record<string, any>);
+    }, {} as Record<string, any[]>);
 
     isLoading = false;
   }
@@ -69,14 +72,13 @@
   }
 
   // Reactive statement to get mood details for each entry
-  $: entriesWithMoodDetails = Object.keys(entries).reduce((acc, date) => {
-    const entry = entries[date];
-    acc[date] = {
+  $: entriesWithMoodDetails = Object.keys(entries).reduce((acc: Record<string, Array<Entry & { moodDetails: any }>>, date) => {
+    acc[date] = entries[date].map((entry: Entry) => ({
       ...entry,
       moodDetails: moods.find(m => m.value === entry.mood)
-    };
+    }));
     return acc;
-  }, {} as Record<string, any>);
+  }, {} as Record<string, any[]>);
 </script>
 
 <div class="flex justify-between mb-4">
@@ -103,63 +105,69 @@
         <div class="bg-white rounded shadow mb-4"> <!-- Container for each day's card -->
           <div
             class="p-1 text-sm font-medium text-center"
-            style="{entriesWithMoodDetails[date] ? `background-color: ${entriesWithMoodDetails[date].moodDetails.lighterColor}; color: ${entriesWithMoodDetails[date].moodDetails.color};` : 'background-color: white; color: gray;'}"
+            style="{entriesWithMoodDetails[date]?.length ? `background-color: ${entriesWithMoodDetails[date][0].moodDetails.lighterColor}; color: ${entriesWithMoodDetails[date][0].moodDetails.color};` : 'background-color: white; color: gray;'}"
           > <!-- Date Header -->
             {new Date(date).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })}
+            {#if entriesWithMoodDetails[date]?.length > 1}
+              <span class="ml-2">({entriesWithMoodDetails[date].length})</span>
+            {/if}
           </div>
 
-          <div
-            class="p-4 cursor-pointer hover:bg-gray-50 transition-colors"
-            on:click={() => {
-              if (entries[date]) {
-                selectedEntry = entries[date];
-                showEntryModal = true;
-              }
-            }}
-            on:keydown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                if (entries[date]) {
-                  selectedEntry = entries[date];
-                  showEntryModal = true;
-                }
-              }
-            }}
-            role="button"
-            tabindex="0"
-          > <!-- Entry Details -->
-            {#if entriesWithMoodDetails[date]}
-              <div class="flex items-center gap-4">
-                {#if entriesWithMoodDetails[date].moodDetails}
-                  <img src={entriesWithMoodDetails[date].moodDetails.icon} alt={entriesWithMoodDetails[date].moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {entriesWithMoodDetails[date].moodDetails.color});" />
-                {/if}
-                <div class="flex flex-col">
-                  <div class="text-sm font-semibold" style="color: {entriesWithMoodDetails[date].moodDetails.color};">
-                    {#if entriesWithMoodDetails[date].moodDetails}
-                      {entriesWithMoodDetails[date].moodDetails.label.toUpperCase()}
+          <div class="p-4">
+            {#if entriesWithMoodDetails[date]?.length}
+              {#each entriesWithMoodDetails[date] as entry (entry.id)}
+                <div
+                  class="mb-3 last:mb-0 p-3 rounded-lg bg-gray-50 cursor-pointer hover:bg-gray-100 transition-colors"
+                  on:click={() => {
+                    selectedEntry = entry;
+                    showEntryModal = true;
+                  }}
+                  on:keydown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      selectedEntry = entry;
+                      showEntryModal = true;
+                    }
+                  }}
+                  role="button"
+                  tabindex="0"
+                >
+                  <div class="flex items-center gap-4">
+                    {#if entry.moodDetails}
+                      <img src={entry.moodDetails.icon} alt={entry.moodDetails.label} class="w-6 h-6" style="filter: drop-shadow(0 0 0 {entry.moodDetails.color});" />
                     {/if}
-                  </div>
-                <div class="text-xs text-gray-600 flex flex-wrap items-center gap-2">
-                  {#if entriesWithMoodDetails[date].activities.length > 0}
-                    {#each entriesWithMoodDetails[date].activities as activityId}
-                      {@const activity = activities.find((a: Activity) => a.id === activityId)}
-                      {#if activity}
-                        <span class="flex items-center">
-                          <i class="mdi {activity.icon} text-base mr-1" style="color: {entriesWithMoodDetails[date].moodDetails.color};"></i>
-                          {activity.label}
-                        </span>
+                    <div class="flex flex-col">
+                      <div class="text-sm font-semibold" style="color: {entry.moodDetails.color};">
+                        {#if entry.timestamp}
+                          <span class="text-xs text-gray-500 mr-2">
+                            {new Date(entry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                          </span>
+                        {/if}
+                        {entry.moodDetails?.label.toUpperCase()}
+                      </div>
+                      <div class="text-xs text-gray-600 flex flex-wrap items-center gap-2">
+                        {#if entry.activities.length > 0}
+                          {#each entry.activities as activityId}
+                            {@const activity = activities.find((a: Activity) => a.id === activityId)}
+                            {#if activity}
+                              <span class="flex items-center">
+                                <i class="mdi {activity.icon} text-base mr-1" style="color: {entry.moodDetails.color};"></i>
+                                {activity.label}
+                              </span>
+                            {/if}
+                          {/each}
+                        {/if}
+                      </div>
+                      {#if entry.notes}
+                        <div class="text-xs text-gray-600 italic">
+                          Notes: {truncateNotes(entry.notes, 15)}
+                        </div>
                       {/if}
-                    {/each}
-                  {/if}
-                </div>
-                {#if entriesWithMoodDetails[date].notes}
-                  <div class="text-xs text-gray-600 italic">
-                      Notes: {truncateNotes(entriesWithMoodDetails[date].notes, 20)}
                     </div>
-                  {/if}
+                  </div>
                 </div>
-              </div>
+              {/each}
             {:else}
-              <div class="text-gray-400 text-sm">No entry</div>
+              <div class="text-gray-400 text-sm">No entries</div>
             {/if}
           </div>
         </div>

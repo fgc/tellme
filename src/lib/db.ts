@@ -14,8 +14,8 @@ class TellmeDB extends Dexie {
 
   constructor() {
     super('TellmeDB');
-    this.version(1).stores({
-      entries: '++id, &date, mood, activities, notes, timestamp'
+    this.version(2).stores({
+      entries: '++id, date, mood, activities, notes, timestamp'
     });
   }
 }

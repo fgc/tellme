@@ -1,7 +1,7 @@
 <script lang="ts">
   import ActivitySelector from '$lib/components/ActivitySelector.svelte';
   import { entryStore, resetEntryStore } from '$lib/stores/entryStore';
-  import { db } from '$lib/db';
+  import { db, addEntry } from '$lib/db';
   import { goto } from '$app/navigation';
   import { moods } from '$lib/config/moods'; // Import moods to display the selected mood icon/label
   import { fade } from 'svelte/transition';
@@ -40,18 +40,11 @@
       date: getTodayDate(),
       mood: currentEntry.mood,
       activities: selectedActivities, // Use local state for activities
-      notes: notes.trim(), // Use local state for notes
-      timestamp: new Date().toISOString()
+      notes: notes.trim() // Use local state for notes
     };
 
     try {
-      // Check if entry exists for this date
-      const existing = await db.entries.get({ date: entry.date });
-
-      // If exists, include its id for update
-      const entryToSave = existing ? { ...entry, id: existing.id } : entry;
-
-      await db.entries.put(entryToSave);
+      await addEntry(entry);
 
       // Reset form and store
       resetEntryStore();

@@ -40,6 +40,11 @@
         <div class="flex items-center mb-4">
           <img src={moodDetails.icon} alt={moodDetails.label} class="w-8 h-8 mr-2" style="filter: drop-shadow(0 0 0 {moodDetails.color});" />
           <span class="text-lg font-semibold" style="color: {moodDetails.color};">
+            {#if entry.timestamp}
+              <span class="text-sm text-gray-500 mr-2">
+                {new Date(entry.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+              </span>
+            {/if}
             {moodDetails.label.toUpperCase()}
           </span>
         </div>
